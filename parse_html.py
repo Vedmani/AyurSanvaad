@@ -6,12 +6,15 @@ from src.html_processing import (
     replace_newlines_in_soup,
     replace_spaces_in_soup,
 )
+import re
+
+from tqdm import tqdm
 
 from src.file_utils import get_all_paths_from_dir, save_file_with_text, replace_directory_in_path
 
 def create_text_files_from_html(dir_path):
     files = get_all_paths_from_dir(dir_path)
-    for file in files:
+    for file in tqdm(files, total=len(files), desc="Processing files"):
         try:
             soup = clean_html(file)
             soup = replace_newlines_in_soup(soup)
@@ -21,7 +24,7 @@ def create_text_files_from_html(dir_path):
             soup = process_html_table(soup, "csv")
             soup = replace_spaces_in_soup(soup)
             text = soup.get_text()
-            save_file_with_text(text, replace_directory_in_path(file, "raw_data", "text_data"))
+            save_file_with_text(text, re.sub(r'\.htm[l]?', '.txt', replace_directory_in_path(file, "raw_data", "text_data")))
         except Exception as e:
             print(f"An error occurred while processing {file}: {str(e)}")
             break

@@ -145,20 +145,23 @@ def process_html_table(soup, table_parser: str) -> BeautifulSoup:
     """
     tables = soup.find_all("table")
     for table in tables:
-        df = pd.read_html(io.StringIO(str(table)), header=0, index_col=0)
-        md = df[0].to_markdown(tablefmt="grid")
-        tsv = df[0].to_csv(sep="\t")
-        csv = df[0].to_csv()
-        # convert table tag to text tag
-        table.name = "text"
-        if table_parser == "md":
-            table.string = "\n<table_start>\n"+md+"<table_end>\n"
-        elif table_parser == "tsv":
-            table.string = "\n<tsv_start>\n"+tsv+"<tsv_end>\n"
-        elif table_parser == "csv":
-            table.string = "\n<csv_start>\n"+csv+"<csv_end>\n"
-        elif table_parser == "blank":
-            table.string = ""
+        try:
+            df = pd.read_html(io.StringIO(str(table)), header=0, index_col=0)
+            md = df[0].to_markdown(tablefmt="grid")
+            tsv = df[0].to_csv(sep="\t")
+            csv = df[0].to_csv()
+            # convert table tag to text tag
+            table.name = "text"
+            if table_parser == "md":
+                table.string = "\n<table_start>\n"+md+"<table_end>\n"
+            elif table_parser == "tsv":
+                table.string = "\n<tsv_start>\n"+tsv+"<tsv_end>\n"
+            elif table_parser == "csv":
+                table.string = "\n<csv_start>\n"+csv+"<csv_end>\n"
+            elif table_parser == "blank":
+                table.string = ""
+        except Exception as e:
+            table.decompose()  # Delete the table tag
     return soup
 
 
