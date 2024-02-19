@@ -27,7 +27,7 @@ def create_text_files_from_html(dir_path):
             save_file_with_text(text, re.sub(r'\.htm[l]?', '.txt', replace_directory_in_path(file, "raw_data", "text_data")))
         except Exception as e:
             print(f"An error occurred while processing {file}: {str(e)}")
-            break
 
 if __name__ == "__main__":
     create_text_files_from_html("/home/dai/35/AyurSanvaad/data/raw_data/Articles")
+    create_text_files_from_html("/home/dai/35/AyurSanvaad/data/raw_data/Therapeutic_Procedures/Procedure_Files") 
